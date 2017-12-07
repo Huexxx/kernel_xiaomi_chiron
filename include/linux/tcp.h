@@ -227,7 +227,8 @@ struct tcp_sock {
 	u8	rate_app_limited:1,  /* rate_{delivered,interval_us} limited? */
 		tlp_retrans:1,	/* TLP is a retransmission */
 		fastopen_connect:1, /* FASTOPEN_CONNECT sockopt */
-		unused:5;
+		is_sack_reneg:1,    /* in recovery from loss with SACK reneg? */
+		unused:4;
 	u8	nonagle     : 4,/* Disable Nagle algorithm?             */
 		thin_lto    : 1,/* Use linear timeouts for thin streams */
 		unused1	    : 1,
