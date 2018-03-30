@@ -1285,6 +1285,7 @@ static int bpf_prog_load(union bpf_attr *attr)
 		return -ENOMEM;
 
 	prog->expected_attach_type = attr->expected_attach_type;
+
 	prog->aux->offload_requested = !!attr->prog_ifindex;
 
 	err = security_bpf_prog_alloc(prog->aux);
