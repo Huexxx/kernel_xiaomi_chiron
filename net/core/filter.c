@@ -3959,8 +3959,9 @@ static const struct bpf_func_proto bpf_getsockopt_proto = {
 	.arg5_type	= ARG_CONST_SIZE,
 };
 
-struct sock *sk_lookup(struct net *net, struct bpf_sock_tuple *tuple,
-		       struct sk_buff *skb, u8 family, u8 proto)
+#ifdef CONFIG_INET
+static struct sock *sk_lookup(struct net *net, struct bpf_sock_tuple *tuple,
+			      struct sk_buff *skb, u8 family, u8 proto)
 {
 	int dif = skb->dev->ifindex;
 	bool refcounted = false;
@@ -4093,6 +4094,7 @@ static const struct bpf_func_proto bpf_sk_release_proto = {
 	.ret_type	= RET_INTEGER,
 	.arg1_type	= ARG_PTR_TO_SOCKET,
 };
+#endif /* CONFIG_INET */
 
 BPF_CALL_2(bpf_sock_ops_cb_flags_set, struct bpf_sock_ops_kern *, bpf_sock,
 	   int, argval)
