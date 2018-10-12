@@ -3963,9 +3963,12 @@ static const struct bpf_func_proto bpf_getsockopt_proto = {
 static struct sock *sk_lookup(struct net *net, struct bpf_sock_tuple *tuple,
 			      struct sk_buff *skb, u8 family, u8 proto)
 {
-	int dif = skb->dev->ifindex;
 	bool refcounted = false;
 	struct sock *sk = NULL;
+	int dif = 0;
+
+	if (skb->dev)
+		dif = skb->dev->ifindex;
 
 	if (family == AF_INET) {
 		__be32 src4 = tuple->ipv4.saddr;
