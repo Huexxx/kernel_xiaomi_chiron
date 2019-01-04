@@ -1324,10 +1324,7 @@ do_udp_sendmsg:
 	opt = ipv6_fixup_options(&opt_space, opt);
 
 	fl6.flowi6_proto = sk->sk_protocol;
-	if (!ipv6_addr_any(daddr))
-		fl6.daddr = *daddr;
-	else
-		fl6.daddr.s6_addr[15] = 0x1; /* :: means loopback (BSD'ism) */
+	fl6.daddr = *daddr;
 	if (ipv6_addr_any(&fl6.saddr) && !ipv6_addr_any(&np->saddr))
 		fl6.saddr = np->saddr;
 	fl6.fl6_sport = inet->inet_sport;
@@ -1354,6 +1351,9 @@ do_udp_sendmsg:
 			fl6.daddr = sin6->sin6_addr;
 		}
 	}
+
+	if (ipv6_addr_any(&fl6.daddr))
+		fl6.daddr.s6_addr[15] = 0x1; /* :: means loopback (BSD'ism) */
 
 	final_p = fl6_update_dst(&fl6, opt, &final);
 	if (final_p)
