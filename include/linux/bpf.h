@@ -190,6 +190,7 @@ enum bpf_arg_type {
 	ARG_ANYTHING,		/* any (initialized) argument is ok */
 	ARG_PTR_TO_SOCKET,	/* pointer to bpf_sock */
 	ARG_PTR_TO_SPIN_LOCK,	/* pointer to bpf_spin_lock */
+	ARG_PTR_TO_SOCK_COMMON,	/* pointer to sock_common */
 };
 
 /* type of values returned from helper functions */
@@ -251,6 +252,8 @@ enum bpf_reg_type {
 	PTR_TO_PACKET_END,	 /* skb->data + headlen */
 	PTR_TO_SOCKET,		 /* reg points to struct bpf_sock */
 	PTR_TO_SOCKET_OR_NULL,	 /* reg points to struct bpf_sock or NULL */
+	PTR_TO_SOCK_COMMON,	 /* reg points to sock_common */
+	PTR_TO_SOCK_COMMON_OR_NULL, /* reg points to sock_common or NULL */
 };
 
 /* The information passed from prog-specific *_is_valid_access
@@ -825,6 +828,9 @@ static unsigned long __used						\
 #endif
 
 #if defined(CONFIG_NET)
+bool bpf_sock_common_is_valid_access(int off, int size,
+				     enum bpf_access_type type,
+				     struct bpf_insn_access_aux *info);
 bool bpf_sock_is_valid_access(int off, int size, enum bpf_access_type type,
 			      struct bpf_insn_access_aux *info);
 u32 bpf_sock_convert_ctx_access(enum bpf_access_type type,
@@ -833,6 +839,12 @@ u32 bpf_sock_convert_ctx_access(enum bpf_access_type type,
 				struct bpf_prog *prog,
 				u32 *target_size);
 #else
+static inline bool bpf_sock_common_is_valid_access(int off, int size,
+						   enum bpf_access_type type,
+						   struct bpf_insn_access_aux *info)
+{
+	return false;
+}
 static inline bool bpf_sock_is_valid_access(int off, int size,
 					    enum bpf_access_type type,
 					    struct bpf_insn_access_aux *info)
