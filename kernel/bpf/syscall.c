@@ -129,7 +129,7 @@ static struct bpf_map *find_and_alloc_map(union bpf_attr *attr)
 	return map;
 }
 
-static void *__bpf_map_area_alloc(size_t size, int numa_node, bool mmapable)
+static void *__bpf_map_area_alloc(u64 size, int numa_node, bool mmapable)
 {
 	/* We definitely need __GFP_NORETRY, so OOM killer doesn't
 	 * trigger under memory pressure as we really just want to
@@ -137,6 +137,9 @@ static void *__bpf_map_area_alloc(size_t size, int numa_node, bool mmapable)
 	 */
 	const gfp_t flags = __GFP_NOWARN | __GFP_NORETRY | __GFP_ZERO;
 	void *area;
+
+	if (size >= SIZE_MAX)
+		return NULL;
 
 	/* kmalloc()'ed memory can't be mmap()'ed */
 	if (!mmapable && size <= (PAGE_SIZE << PAGE_ALLOC_COSTLY_ORDER)) {
@@ -153,12 +156,12 @@ static void *__bpf_map_area_alloc(size_t size, int numa_node, bool mmapable)
 					   __builtin_return_address(0));
 }
 
-void *bpf_map_area_alloc(size_t size, int numa_node)
+void *bpf_map_area_alloc(u64 size, int numa_node)
 {
 	return __bpf_map_area_alloc(size, numa_node, false);
 }
 
-void *bpf_map_area_mmapable_alloc(size_t size, int numa_node)
+void *bpf_map_area_mmapable_alloc(u64 size, int numa_node)
 {
 	return __bpf_map_area_alloc(size, numa_node, true);
 }
