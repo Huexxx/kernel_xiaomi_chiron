@@ -1046,7 +1046,7 @@ do_error:
 		goto out;
 out_err:
 	/* make sure we wake any epoll edge trigger waiter */
-	if (unlikely(skb_queue_len(&sk->sk_write_queue) == 0 && err == -EAGAIN))
+	if (unlikely(tcp_rtx_and_write_queues_empty(sk) && err == -EAGAIN))
 		sk->sk_write_space(sk);
 	return sk_stream_error(sk, flags, err);
 }
@@ -1426,7 +1426,7 @@ out_err:
 	sock_zerocopy_put_abort(uarg, true);
 	err = sk_stream_error(sk, flags, err);
 	/* make sure we wake any epoll edge trigger waiter */
-	if (unlikely(skb_queue_len(&sk->sk_write_queue) == 0 && err == -EAGAIN))
+	if (unlikely(tcp_rtx_and_write_queues_empty(sk) && err == -EAGAIN))
 		sk->sk_write_space(sk);
 	return err;
 }
