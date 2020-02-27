@@ -81,7 +81,7 @@ struct htab_elem {
 	struct hlist_node hash_node;
 	u32 hash;
 	struct sock *sk;
-	char key[0];
+	char key[];
 };
 
 enum smap_psock_state {
