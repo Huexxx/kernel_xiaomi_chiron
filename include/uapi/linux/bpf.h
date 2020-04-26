@@ -487,7 +487,12 @@ union bpf_attr {
  * 		0 on success, or a negative error in case of failure.
  *
  * u64 bpf_ktime_get_ns(void)
- *     Return: current ktime
+ * 	Description
+ * 		Return the time elapsed since system boot, in nanoseconds.
+ * 		Does not include time the system was suspended.
+ * 		See: clock_gettime(CLOCK_MONOTONIC)
+ * 	Return
+ * 		Current *ktime*.
  *
  * int bpf_trace_printk(const char *fmt, int fmt_size, ...)
  *     Return: length of buffer written or negative error
@@ -1411,6 +1416,14 @@ union bpf_attr {
  * 		**bpf_get_current_cgroup_id**\ ().
  * 	Return
  * 		The id is returned or 0 in case the id could not be retrieved.
+ *
+ * u64 bpf_ktime_get_boot_ns(void)
+ * 	Description
+ * 		Return the time elapsed since system boot, in nanoseconds.
+ * 		Does include the time the system was suspended.
+ * 		See: clock_gettime(CLOCK_BOOTTIME)
+ * 	Return
+ * 		Current *ktime*.
  */
 #define __BPF_FUNC_MAPPER(FN)		\
 	FN(unspec),			\
