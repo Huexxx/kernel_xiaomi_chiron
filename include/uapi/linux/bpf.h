@@ -1430,7 +1430,7 @@ union bpf_attr {
  * 	Return
  * 		Current *ktime*.
  *
- * void *bpf_ringbuf_output(void *ringbuf, void *data, u64 size, u64 flags)
+ * int bpf_ringbuf_output(void *ringbuf, void *data, u64 size, u64 flags)
  * 	Description
  * 		Copy *size* bytes from *data* into a ring buffer *ringbuf*.
  * 		If BPF_RB_NO_WAKEUP is specified in *flags*, no notification of
