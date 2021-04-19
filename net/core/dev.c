@@ -3646,11 +3646,11 @@ static u32 netif_receive_generic_xdp(struct sk_buff *skb,
 {
 	struct netdev_rx_queue *rxqueue;
 	u32 metalen, act = XDP_DROP;
+	bool orig_bcast, orig_host;
 	struct xdp_buff xdp;
 	void *orig_data;
 	__be16 orig_eth_type;
 	struct ethhdr *eth;
-	bool orig_bcast;
 	int hlen, off;
 	u32 mac_len;
 
@@ -3685,6 +3685,7 @@ static u32 netif_receive_generic_xdp(struct sk_buff *skb,
 	xdp.data_hard_start = skb->data - skb_headroom(skb);
 	orig_data = xdp.data;
 	eth = (struct ethhdr *)xdp.data;
+	orig_host = ether_addr_equal_64bits(eth->h_dest, skb->dev->dev_addr);
 	orig_bcast = is_multicast_ether_addr_64bits(eth->h_dest);
 	orig_eth_type = eth->h_proto;
 
@@ -3703,8 +3704,11 @@ static u32 netif_receive_generic_xdp(struct sk_buff *skb,
 	/* check if XDP changed eth hdr such SKB needs update */
 	eth = (struct ethhdr *)xdp.data;
 	if ((orig_eth_type != eth->h_proto) ||
+	    (orig_host != ether_addr_equal_64bits(eth->h_dest,
+						  skb->dev->dev_addr)) ||
 	    (orig_bcast != is_multicast_ether_addr_64bits(eth->h_dest))) {
 		__skb_push(skb, ETH_HLEN);
+		skb->pkt_type = PACKET_HOST;
 		skb->protocol = eth_type_trans(skb, skb->dev);
 	}
 
