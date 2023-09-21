@@ -90,7 +90,7 @@ int rds_tcp_conn_connect(struct rds_connection *conn)
 	src.sin_addr.s_addr = (__force u32)conn->c_laddr;
 	src.sin_port = (__force u16)htons(0);
 
-	ret = sock->ops->bind(sock, (struct sockaddr *)&src, sizeof(src));
+	ret = kernel_bind(sock, (struct sockaddr *)&src, sizeof(src));
 	if (ret) {
 		rdsdebug("bind failed with %d at address %pI4\n",
 			 ret, &conn->c_laddr);
