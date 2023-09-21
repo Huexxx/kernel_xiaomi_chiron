@@ -106,7 +106,7 @@ int rds_tcp_conn_connect(struct rds_connection *conn)
 	 * own the socket
 	 */
 	rds_tcp_set_callbacks(sock, conn);
-	ret = sock->ops->connect(sock, (struct sockaddr *)&dest, sizeof(dest),
+	ret = kernel_connect(sock, (struct sockaddr *)&dest, sizeof(dest),
 				 O_NONBLOCK);
 
 	rdsdebug("connect to address %pI4 returned %d\n", &conn->c_faddr, ret);
