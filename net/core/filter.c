@@ -6560,6 +6560,31 @@ const struct bpf_verifier_ops sk_msg_verifier_ops = {
 const struct bpf_prog_ops sk_msg_prog_ops = {
 };
 
+#ifdef CONFIG_ANDROID_SPOOF_KERNEL_VERSION_FOR_BPF
+static const struct bpf_func_proto *
+dummy_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
+{
+	return bpf_base_func_proto(func_id, prog);
+}
+
+static bool dummy_is_valid_access(int off, int size,
+				  enum bpf_access_type type,
+				  const struct bpf_prog *prog,
+				  struct bpf_insn_access_aux *info)
+{
+	return true;
+}
+
+const struct bpf_verifier_ops dummy_verifier_ops = {
+	.get_func_proto		= dummy_func_proto,
+	.is_valid_access	= dummy_is_valid_access,
+	.convert_ctx_access	= bpf_convert_ctx_access,
+};
+
+const struct bpf_prog_ops dummy_prog_ops = {
+};
+#endif
+
 int sk_detach_filter(struct sock *sk)
 {
 	int ret = -ENOENT;
