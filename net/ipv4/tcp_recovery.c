@@ -34,7 +34,7 @@ u32 tcp_rack_reo_wnd(const struct sock *sk)
 			return 0;
 
 		if (tp->sacked_out >= tp->reordering &&
-		    !(sock_net(sk)->ipv4.sysctl_tcp_recovery & TCP_RACK_NO_DUPTHRESH))
+		    !(sysctl_tcp_recovery & TCP_RACK_NO_DUPTHRESH))
 			return 0;
 	}
 
