@@ -237,7 +237,7 @@ void tcp_newreno_mark_lost(struct sock *sk, bool snd_una_advanced)
 
 	if ((state < TCP_CA_Recovery && tp->sacked_out >= tp->reordering) ||
 	    (state == TCP_CA_Recovery && snd_una_advanced)) {
-		struct sk_buff *skb = tcp_rtx_queue_head(sk);
+		struct sk_buff *skb = tcp_write_queue_head(sk);
 		u32 mss;
 
 		if (TCP_SKB_CB(skb)->sacked & TCPCB_LOST)
@@ -245,8 +245,7 @@ void tcp_newreno_mark_lost(struct sock *sk, bool snd_una_advanced)
 
 		mss = tcp_skb_mss(skb);
 		if (tcp_skb_pcount(skb) > 1 && skb->len > mss)
-			tcp_fragment(sk, TCP_FRAG_IN_RTX_QUEUE, skb,
-				     mss, mss, GFP_ATOMIC);
+			tcp_fragment(sk, skb, mss, mss, GFP_ATOMIC);
 
 		tcp_skb_mark_lost_uncond_verify(tp, skb);
 	}
