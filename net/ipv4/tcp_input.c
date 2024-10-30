@@ -2776,7 +2776,7 @@ static void tcp_identify_packet_loss(struct sock *sk, int *ack_flag)
 {
 	struct tcp_sock *tp = tcp_sk(sk);
 
-	if (tcp_rtx_queue_empty(sk))
+	if (tcp_write_queue_empty(sk))
 		return;
 
 	if (unlikely(tcp_is_reno(tp))) {
