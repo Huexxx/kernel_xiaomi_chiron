@@ -438,10 +438,10 @@ bool tcp_fastopen_active_should_disable(struct sock *sk)
 	int multiplier;
 	unsigned long timeout;
 
-	if (!tfo_bh_timeout)
+	if (!sysctl_tcp_fastopen_blackhole_timeout)
 		return false;
 
-	tfo_da_times = atomic_read(tfo_active_disable_times);
+	tfo_da_times = atomic_read(&tfo_active_disable_times);
 	if (!tfo_da_times)
 		return false;
 
