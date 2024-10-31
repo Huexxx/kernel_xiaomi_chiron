@@ -452,7 +452,7 @@ bool tcp_fastopen_active_should_disable(struct sock *sk)
 	multiplier = 1 << min(tfo_da_times - 1, 6);
 
 	/* Paired with the WRITE_ONCE() in tcp_fastopen_active_disable(). */
-	timeout = READ_ONCE(ipv4.tfo_active_disable_stamp) +
+	timeout = READ_ONCE(tfo_active_disable_stamp) +
 		  multiplier * sysctl_tcp_fastopen_blackhole_timeout * HZ;
 	if (time_before(jiffies, timeout))
 		return true;
