@@ -5323,8 +5323,7 @@ static struct cgroup *cgroup_create(struct cgroup *parent)
 	cgrp->level = level;
 	ret = cgroup_bpf_inherit(cgrp);
 	if (ret) {
-		cgroup_idr_remove(&root->cgroup_idr, cgrp->id);
-		goto out_cancel_ref;
+		goto out_idr_free;
 	}
 
 	/*
